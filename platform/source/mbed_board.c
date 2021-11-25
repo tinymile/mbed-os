@@ -31,6 +31,9 @@ WEAK MBED_NORETURN void mbed_die(void)
     gpio_t led_err;
     gpio_t motor_right;
     gpio_t motor_left;
+    gpio_t rst;
+    gpio_t lid;
+    gpio_t lock;
 #ifdef LED1
     gpio_init_out(&led_err, LED1);
 #endif
@@ -40,6 +43,15 @@ WEAK MBED_NORETURN void mbed_die(void)
 #ifdef ML_PWM
     gpio_init_out(&motor_left, ML_PWM);
 #endif
+#ifdef RST
+    gpio_init_out_ex(&rst, RST, 1);
+#endif
+#ifdef LID_PWM
+    gpio_init_out(&lid, LID_PWM);
+#endif
+#ifdef SOL_LOCK
+    gpio_init_out(&lock, SOL_LOCK);
+#endif
 
     while (1) {
 #ifdef MR_PWM
@@ -47,6 +59,12 @@ WEAK MBED_NORETURN void mbed_die(void)
 #endif
 #ifdef ML_PWM
         gpio_write(&motor_left, 0);
+#endif
+#ifdef LID_PWM
+        gpio_write(&lid, 0);
+#endif
+#ifdef SOL_LOCK
+        gpio_write(&lock, 0);
 #endif
 #ifdef LED1
         for (int i = 0; i < 4; ++i) {
@@ -62,6 +80,10 @@ WEAK MBED_NORETURN void mbed_die(void)
             gpio_write(&led_err, 0);
             wait_us(400000);
         }
+#endif
+#ifdef RST
+        wait_us(2000000);
+        gpio_write(&rst, 0);
 #endif
     }
 }
