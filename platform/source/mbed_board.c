@@ -29,6 +29,7 @@ WEAK MBED_NORETURN void mbed_die(void)
     core_util_critical_section_enter();
 #endif
     gpio_t led_err;
+    gpio_t led_err2;
     gpio_t motor_right;
     gpio_t motor_left;
     gpio_t rst;
@@ -36,6 +37,9 @@ WEAK MBED_NORETURN void mbed_die(void)
     gpio_t lock;
 #ifdef LED1
     gpio_init_out(&led_err, LED1);
+#endif
+#ifdef LED2
+    gpio_init_out(&led_err2, LED2);
 #endif
 #ifdef MR_PWM
     gpio_init_out(&motor_right, MR_PWM);
@@ -69,20 +73,28 @@ WEAK MBED_NORETURN void mbed_die(void)
 #ifdef LED1
         for (int i = 0; i < 4; ++i) {
             gpio_write(&led_err, 1);
-            wait_us(150000);
+            gpio_write(&led_err2, 1);
+            wait_us(20000);
             gpio_write(&led_err, 0);
-            wait_us(150000);
+            gpio_write(&led_err2, 0);
+            wait_us(20000);
         }
+        //Original BLOD (Blue LEDs of Death)
+        // for (int i = 0; i < 4; ++i) {
+        //     gpio_write(&led_err, 1);
+        //     wait_us(150000);
+        //     gpio_write(&led_err, 0);
+        //     wait_us(150000);
+        // }
 
-        for (int i = 0; i < 4; ++i) {
-            gpio_write(&led_err, 1);
-            wait_us(400000);
-            gpio_write(&led_err, 0);
-            wait_us(400000);
-        }
+        // for (int i = 0; i < 4; ++i) {
+        //     gpio_write(&led_err, 1);
+        //     wait_us(400000);
+        //     gpio_write(&led_err, 0);
+        //     wait_us(400000);
+        // }
 #endif
 #ifdef RST
-        wait_us(2000000);
         gpio_write(&rst, 0);
 #endif
     }
