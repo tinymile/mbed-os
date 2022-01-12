@@ -31,18 +31,30 @@ void analogin_pll_configuration(void)
     while (LL_HSEM_1StepLock(HSEM, CFG_HW_RCC_SEMID)) {
     }
 #endif /* DUAL_CORE */
-
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-    PeriphClkInitStruct.PLL2.PLL2M = 4;
-    PeriphClkInitStruct.PLL2.PLL2N = 240;
-    PeriphClkInitStruct.PLL2.PLL2P = 2;
+    PeriphClkInitStruct.PLL2.PLL2M = 1;
+    PeriphClkInitStruct.PLL2.PLL2N = 9;
+    PeriphClkInitStruct.PLL2.PLL2P = 1;
     PeriphClkInitStruct.PLL2.PLL2Q = 2;
     PeriphClkInitStruct.PLL2.PLL2R = 2;
     PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_1;
     PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
-    PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+    PeriphClkInitStruct.PLL2.PLL2FRACN = 72;
     PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
+
+    // RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+    // PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+    // PeriphClkInitStruct.PLL2.PLL2M = 4;
+    // PeriphClkInitStruct.PLL2.PLL2N = 240;
+    // PeriphClkInitStruct.PLL2.PLL2P = 2;
+    // PeriphClkInitStruct.PLL2.PLL2Q = 2;
+    // PeriphClkInitStruct.PLL2.PLL2R = 2;
+    // PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_1;
+    // PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+    // PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+    // PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
+    
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
         error("analogin_init HAL_RCCEx_PeriphCLKConfig");
     }
