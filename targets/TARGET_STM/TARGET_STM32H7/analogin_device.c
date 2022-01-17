@@ -33,27 +33,16 @@ void analogin_pll_configuration(void)
 #endif /* DUAL_CORE */
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-    PeriphClkInitStruct.PLL2.PLL2M = 1;
-    PeriphClkInitStruct.PLL2.PLL2N = 9;
-    PeriphClkInitStruct.PLL2.PLL2P = 1;
+    PeriphClkInitStruct.PLL2.PLL2M = 8;
+    PeriphClkInitStruct.PLL2.PLL2N = 240;
+    PeriphClkInitStruct.PLL2.PLL2P = 4;
     PeriphClkInitStruct.PLL2.PLL2Q = 2;
     PeriphClkInitStruct.PLL2.PLL2R = 2;
     PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_1;
     PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
-    PeriphClkInitStruct.PLL2.PLL2FRACN = 72;
-    PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
+    PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
+    PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_CLKP;//RCC_ADCCLKSOURCE_PLL2;// RCC_ADCCLKSOURCE_CLKP;//RCC_ADCCLKSOURCE_PLL2; //RCC_ADCCLKSOURCE_SYSCLK
 
-    // RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-    // PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-    // PeriphClkInitStruct.PLL2.PLL2M = 4;
-    // PeriphClkInitStruct.PLL2.PLL2N = 240;
-    // PeriphClkInitStruct.PLL2.PLL2P = 2;
-    // PeriphClkInitStruct.PLL2.PLL2Q = 2;
-    // PeriphClkInitStruct.PLL2.PLL2R = 2;
-    // PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_1;
-    // PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
-    // PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
-    // PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
     
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
         error("analogin_init HAL_RCCEx_PeriphCLKConfig");
@@ -96,8 +85,25 @@ void analogin_init(analogin_t *obj, PinName pin)
     obj->pin = pin;
 
     // Configure ADC object structures
+    // obj->handle.State = HAL_ADC_STATE_RESET;
+    // obj->handle.Init.ClockPrescaler           = ADC_CLOCK_ASYNC_DIV4;
+    // obj->handle.Init.Resolution               = ADC_RESOLUTION_16B;
+    // obj->handle.Init.ScanConvMode             = ADC_SCAN_DISABLE;
+    // obj->handle.Init.EOCSelection             = ADC_EOC_SINGLE_CONV;
+    // obj->handle.Init.LowPowerAutoWait         = DISABLE;
+    // obj->handle.Init.ContinuousConvMode       = DISABLE;
+    // obj->handle.Init.NbrOfConversion          = 1;
+    // obj->handle.Init.DiscontinuousConvMode    = DISABLE;
+    // obj->handle.Init.NbrOfDiscConversion      = 0;
+    // obj->handle.Init.ExternalTrigConv         = ADC_SOFTWARE_START;
+    // obj->handle.Init.ExternalTrigConvEdge     = ADC_EXTERNALTRIGCONVEDGE_NONE;
+    // obj->handle.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
+    // obj->handle.Init.Overrun                  = ADC_OVR_DATA_OVERWRITTEN;
+    // obj->handle.Init.LeftBitShift             = ADC_LEFTBITSHIFT_NONE;
+    // obj->handle.Init.OversamplingMode         = DISABLE;
+
     obj->handle.State = HAL_ADC_STATE_RESET;
-    obj->handle.Init.ClockPrescaler           = ADC_CLOCK_ASYNC_DIV4;
+    obj->handle.Init.ClockPrescaler           = ADC_CLOCK_SYNC_PCLK_DIV4;//ADC_CLOCK_ASYNC_DIV4;//ADC_CLOCK_SYNC_PCLK_DIV1;//ADC_CLOCK_ASYNC_DIV4;//ADC_CLOCK_ASYNC_DIV1;//ADC_CLOCK_SYNC_PCLK_DIV4
     obj->handle.Init.Resolution               = ADC_RESOLUTION_16B;
     obj->handle.Init.ScanConvMode             = ADC_SCAN_DISABLE;
     obj->handle.Init.EOCSelection             = ADC_EOC_SINGLE_CONV;
@@ -112,6 +118,22 @@ void analogin_init(analogin_t *obj, PinName pin)
     obj->handle.Init.Overrun                  = ADC_OVR_DATA_OVERWRITTEN;
     obj->handle.Init.LeftBitShift             = ADC_LEFTBITSHIFT_NONE;
     obj->handle.Init.OversamplingMode         = DISABLE;
+
+//       hadc1.Instance = ADC1;
+//   hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
+//   hadc1.Init.Resolution = ADC_RESOLUTION_16B;
+//   hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
+//   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+//   hadc1.Init.LowPowerAutoWait = DISABLE;
+//   hadc1.Init.ContinuousConvMode = DISABLE;
+//   hadc1.Init.NbrOfConversion = 1;
+//   hadc1.Init.DiscontinuousConvMode = DISABLE;
+//   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+//   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+//   hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
+//   hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+//   hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
+//   hadc1.Init.OversamplingMode = DISABLE;
 
     analogin_pll_configuration();
 
@@ -160,7 +182,7 @@ uint16_t adc_read(analogin_t *obj)
 
     // Configure ADC channel
     sConfig.Rank         = ADC_REGULAR_RANK_1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_64CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;//ADC_SAMPLETIME_64CYCLES_5;
     sConfig.Offset       = 0;
     if (obj->differential) {
         sConfig.SingleDiff = ADC_DIFFERENTIAL_ENDED;
