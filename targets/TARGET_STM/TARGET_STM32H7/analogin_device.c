@@ -33,15 +33,15 @@ void analogin_pll_configuration(void)
 #endif /* DUAL_CORE */
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
-    PeriphClkInitStruct.PLL2.PLL2M = 8;
-    PeriphClkInitStruct.PLL2.PLL2N = 240;
-    PeriphClkInitStruct.PLL2.PLL2P = 4;
+    PeriphClkInitStruct.PLL2.PLL2M = 1;
+    PeriphClkInitStruct.PLL2.PLL2N = 10;
+    PeriphClkInitStruct.PLL2.PLL2P = 1;
     PeriphClkInitStruct.PLL2.PLL2Q = 2;
     PeriphClkInitStruct.PLL2.PLL2R = 2;
-    PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_1;
-    PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+    PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
+    PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
     PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
-    PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_CLKP;//RCC_ADCCLKSOURCE_PLL2;// RCC_ADCCLKSOURCE_CLKP;//RCC_ADCCLKSOURCE_PLL2; //RCC_ADCCLKSOURCE_SYSCLK
+    PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2; //RCC_ADCCLKSOURCE_SYSCLK;
 
     
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
@@ -103,7 +103,7 @@ void analogin_init(analogin_t *obj, PinName pin)
     // obj->handle.Init.OversamplingMode         = DISABLE;
 
     obj->handle.State = HAL_ADC_STATE_RESET;
-    obj->handle.Init.ClockPrescaler           = ADC_CLOCK_SYNC_PCLK_DIV4;//ADC_CLOCK_ASYNC_DIV4;//ADC_CLOCK_SYNC_PCLK_DIV1;//ADC_CLOCK_ASYNC_DIV4;//ADC_CLOCK_ASYNC_DIV1;//ADC_CLOCK_SYNC_PCLK_DIV4
+    obj->handle.Init.ClockPrescaler           = ADC_CLOCK_ASYNC_DIV32;//ADC_CLOCK_SYNC_PCLK_DIV4;//
     obj->handle.Init.Resolution               = ADC_RESOLUTION_16B;
     obj->handle.Init.ScanConvMode             = ADC_SCAN_DISABLE;
     obj->handle.Init.EOCSelection             = ADC_EOC_SINGLE_CONV;
@@ -170,6 +170,8 @@ void analogin_init(analogin_t *obj, PinName pin)
         HAL_ADCEx_Calibration_Start(&obj->handle, ADC_CALIB_OFFSET, ADC_DIFFERENTIAL_ENDED);
     } else {
         HAL_ADCEx_Calibration_Start(&obj->handle, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
+        // HAL_ADCEx_Calibration_Start(&obj->handle, ADC_CALIB_OFFSET_LINEARITY, ADC_SINGLE_ENDED);
+        // ADC_CALIB_OFFSET_LINEARITY
     }
 }
 
@@ -182,7 +184,7 @@ uint16_t adc_read(analogin_t *obj)
 
     // Configure ADC channel
     sConfig.Rank         = ADC_REGULAR_RANK_1;
-    sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;//ADC_SAMPLETIME_64CYCLES_5;
+    sConfig.SamplingTime = ADC_SAMPLETIME_16CYCLES_5;//ADC_SAMPLETIME_2CYCLES_5;//ADC_SAMPLETIME_1CYCLE_5;//ADC_SAMPLETIME_64CYCLES_5;
     sConfig.Offset       = 0;
     if (obj->differential) {
         sConfig.SingleDiff = ADC_DIFFERENTIAL_ENDED;
